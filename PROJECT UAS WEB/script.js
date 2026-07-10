@@ -4,19 +4,14 @@
 
 let selectedTime = null;
 
-// Deteksi jika halaman di-refresh, paksa hapus semua data session!
-if (performance.navigation.type === performance.navigation.TYPE_RELOAD) {
-  sessionStorage.clear();
-}
+// Catatan: Kode deteksi refresh sessionStorage.clear() telah dihapus 
+// agar data di localStorage tetap bertahan saat halaman dimuat ulang.
 
 document.addEventListener("DOMContentLoaded", () => {
   if (document.getElementById("booking-form")) {
     initDashboard();
   }
-  if (
-    document.getElementById("dynamic-history-table") ||
-    document.getElementById("completed-history-table")
-  ) {
+  if (document.getElementById("dynamic-history-table") || document.getElementById("completed-history-table")) {
     initHistory();
   }
 });
@@ -41,53 +36,34 @@ function initDashboard() {
   const modalTrackingId = document.getElementById("modal-tracking-id");
   const modalCloseBtn = document.getElementById("modal-close-btn");
 
-  // Ambil data slot dan riwayat dari session
-  let bookedSlots =
-    JSON.parse(sessionStorage.getItem("runtimeBookedSlots")) || [];
-  let bookingHistory =
-    JSON.parse(sessionStorage.getItem("runtimeActiveBookings")) || [];
+  // Ambil data slot dan riwayat dari localStorage
+  let bookedSlots = JSON.parse(localStorage.getItem("runtimeBookedSlots")) || [];
+  let bookingHistory = JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
 
-  // PERBAIKAN 1: Mengubah efek visual slot waktu yang sudah dibooking menjadi "Penuh" dan disabled
+  // Mengubah efek visual slot waktu yang sudah dibooking menjadi "Penuh" dan disabled
   buttons.forEach((btn) => {
     const btnTime = btn.getAttribute("data-time");
     const statusTextElement = btn.querySelector(".slot-status");
 
     if (bookedSlots.includes(btnTime)) {
-      btn.className =
-        "group relative overflow-hidden bg-neutral-200/70 p-6 rounded-xl text-left cursor-not-allowed border border-neutral-300 opacity-60 pointer-events-none";
+      btn.className = "group relative overflow-hidden bg-neutral-200/70 p-6 rounded-xl text-left cursor-not-allowed border border-neutral-300 opacity-60 pointer-events-none";
       btn.disabled = true;
       if (statusTextElement) {
         statusTextElement.textContent = "Penuh";
-        statusTextElement.className =
-          "slot-status text-xs mt-1 font-bold text-red-600";
+        statusTextElement.className = "slot-status text-xs mt-1 font-bold text-red-600";
       }
     } else {
-      btn.className =
-        "group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10";
+      btn.className = "group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10";
       btn.disabled = false;
       if (statusTextElement) {
         statusTextElement.textContent = "Tersedia";
-        statusTextElement.className =
-          "slot-status text-xs mt-1 font-medium text-emerald-600";
+        statusTextElement.className = "slot-status text-xs mt-1 font-medium text-emerald-600";
       }
     }
   });
 
   const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-  const bulan = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
+  const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const today = new Date();
   const formattedFullDate = `${hari[today.getDay()]}, ${today.getDate()} ${bulan[today.getMonth()]} ${today.getFullYear()}`;
   const formattedShortDate = `${today.getDate()} ${bulan[today.getMonth()].substring(0, 3)} ${today.getFullYear()}`;
@@ -97,9 +73,7 @@ function initDashboard() {
 
   function updateSlotCount() {
     if (slotCountText) {
-      const available = Array.from(buttons).filter(
-        (btn) => !btn.disabled,
-      ).length;
+      const available = Array.from(buttons).filter((btn) => !btn.disabled).length;
       slotCountText.textContent = available + " Slot Tersedia";
     }
   }
@@ -110,7 +84,7 @@ function initDashboard() {
       if (btn.disabled) return;
       selectedTime = btn.getAttribute("data-time");
       if (selectedTimeText) selectedTimeText.textContent = selectedTime;
-
+      
       // Bersihkan style aktif dari tombol lain yang tidak ter-disabled
       buttons.forEach((b) => {
         if (!b.disabled) {
@@ -140,22 +114,19 @@ function initDashboard() {
         return;
       }
 
-      // PERBAIKAN 2: Validasi panjang karakter nomor telepon (minimal 10 digit dan maksimal 13 digit)
+      // Validasi panjang karakter nomor telepon (minimal 10 digit dan maksimal 13 digit)
       if (teleponValue.length < 10 || teleponValue.length > 13) {
         alert("Nomor telepon harus berukuran antara 10 sampai 13 digit angka!");
         return;
       }
 
-      // Durasi hitung mundur 30 detik untuk testing
-      const durationMs = 30 * 1000;
+      // Durasi hitung mundur diubah menjadi 5 menit agar lebih realistis di localStorage
+      const durationMs = 5 * 60 * 1000; 
       const endTime = Date.now() + durationMs;
 
       if (!bookedSlots.includes(selectedTime)) {
         bookedSlots.push(selectedTime);
-        sessionStorage.setItem(
-          "runtimeBookedSlots",
-          JSON.stringify(bookedSlots),
-        );
+        localStorage.setItem("runtimeBookedSlots", JSON.stringify(bookedSlots));
       }
 
       const trackingId = "A-" + Math.floor(100 + Math.random() * 900);
@@ -166,20 +137,17 @@ function initDashboard() {
         tanggal: formattedShortDate,
         waktu: selectedTime,
         endTime: endTime,
-        status: "Antrian Berhasil",
+        status: "Antrian Berhasil"
       };
 
       bookingHistory.unshift(dataBaru);
-      sessionStorage.setItem(
-        "runtimeActiveBookings",
-        JSON.stringify(bookingHistory),
-      );
+      localStorage.setItem("runtimeActiveBookings", JSON.stringify(bookingHistory));
 
-      // PERBAIKAN 3: Menampilkan ID Tracking di Modal Pop-up sebelum redireksi halaman
+      // Menampilkan ID Tracking di Modal Pop-up sebelum redireksi halaman
       if (successModal && modalTrackingId) {
         modalTrackingId.textContent = "#" + trackingId;
         successModal.classList.remove("hidden");
-
+        
         // Aksi ketika tombol di dalam modal diklik baru pindah halaman
         modalCloseBtn.addEventListener("click", () => {
           window.location.href = "history.html";
@@ -214,12 +182,11 @@ function initHistory() {
   const completedTableBody = document.getElementById("completed-history-table");
 
   function renderTables() {
-    const allBookings =
-      JSON.parse(sessionStorage.getItem("runtimeActiveBookings")) || [];
+    const allBookings = JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
     const now = Date.now();
 
-    const activeList = allBookings.filter((item) => now < item.endTime);
-    const completedList = allBookings.filter((item) => now >= item.endTime);
+    const activeList = allBookings.filter(item => now < item.endTime);
+    const completedList = allBookings.filter(item => now >= item.endTime);
 
     // 1. RENDER TABEL TERBARU (AKTIF)
     if (activeList.length === 0) {
@@ -236,7 +203,7 @@ function initHistory() {
         const timeLeft = Math.max(0, Math.ceil((item.endTime - now) / 1000));
         const minutes = Math.floor(timeLeft / 60);
         const seconds = timeLeft % 60;
-        const countdownText = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+        const countdownText = `${minutes}:${seconds < 10 ? '0' : ''}${seconds}`;
 
         activeHtml += `
           <tr class="hover:bg-yellow-50/20 transition bg-white/80">
@@ -259,7 +226,7 @@ function initHistory() {
 
     // 2. RENDER TABEL SELESAI (DENGAN DUMMY DATA ANTO)
     let completedHtml = "";
-
+    
     // Baris Dummy Statis "Anto"
     completedHtml += `
       <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60">
@@ -292,7 +259,7 @@ function initHistory() {
         </tr>
       `;
     });
-
+    
     completedTableBody.innerHTML = completedHtml;
   }
 
