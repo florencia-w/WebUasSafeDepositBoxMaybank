@@ -1,0 +1,558 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>Maybank SDB - Beranda</title>
+    <link
+      href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Inter:wght@300;400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary-fixed": "#ffe16d",
+              "on-error-container": "#93000a",
+              "on-primary-fixed": "#221b00",
+              "secondary-container": "#e4e2e1",
+              "surface-dim": "#dadada",
+              "tertiary-fixed": "#79f5ff",
+              "on-primary": "#ffffff",
+              surface: "#f9f9f9",
+              outline: "#7e775f",
+              background: "#f9f9f9",
+              "on-tertiary-container": "#006a70",
+              "secondary-fixed": "#e4e2e1",
+              "on-secondary-fixed": "#1b1c1c",
+              secondary: "#5f5e5e",
+              "outline-variant": "#d0c6ab",
+              "on-primary-fixed-variant": "#544600",
+              "surface-container-lowest": "#ffffff",
+              "error-container": "#ffdad6",
+              "on-surface": "#1a1c1c",
+              "surface-bright": "#f9f9f9",
+              primary: "#705d00",
+              error: "#ba1a1a",
+              "on-secondary": "#ffffff",
+              "surface-container-high": "#e8e8e8",
+              "surface-tint": "#705d00",
+              "primary-fixed-dim": "#e9c400",
+              "secondary-fixed-dim": "#c8c6c6",
+              "surface-container-low": "#f3f3f3",
+              "on-tertiary-fixed-variant": "#004f54",
+              "surface-variant": "#e2e2e2",
+              "on-background": "#1a1c1c",
+              "on-secondary-container": "#656464",
+              "on-secondary-fixed-variant": "#474747",
+              "inverse-primary": "#e9c400",
+              "on-primary-container": "#705e00",
+              "surface-container": "#eeeeee",
+              "surface-container-highest": "#e2e2e2",
+              "on-error": "#ffffff",
+              "inverse-on-surface": "#f1f1f1",
+              "inverse-surface": "#2f3131",
+              "on-surface-variant": "#4d4732",
+              "on-tertiary-fixed": "#002022",
+              "tertiary-container": "#00f1ff",
+              tertiary: "#00696f",
+              "primary-container": "#ffd700",
+              "on-tertiary": "#ffffff",
+              "tertiary-fixed-dim": "#00dbe8",
+            },
+            borderRadius: {
+              DEFAULT: "0.25rem",
+              lg: "0.5rem",
+              xl: "0.75rem",
+              full: "9999px",
+            },
+            fontFamily: {
+              headline: ["Manrope"],
+              body: ["Inter"],
+              label: ["Inter"],
+            },
+          },
+        },
+      };
+    </script>
+    <style>
+      .material-symbols-outlined {
+        font-variation-settings:
+          "FILL" 0,
+          "wght" 400,
+          "GRAD" 0,
+          "opsz" 24;
+      }
+    </style>
+  </head>
+  <body
+    class="bg-gradient-to-br from-[#F9F6E8] via-[#D4AF37] to-[#996515] min-h-screen text-slate-900 font-sans selection:bg-[#996515] selection:text-white flex flex-col justify-between"
+  >
+    <div class="w-full">
+      <nav
+        class="bg-[#FDFBF5]/70 dark:bg-neutral-900/70 backdrop-blur-xl docked full-width top-0 sticky z-50 shadow-sm dark:shadow-none flex justify-between items-center w-full px-6 py-4 max-w-full font-manrope antialiased tracking-tight"
+      >
+        <div class="flex items-center justify-between w-full">
+          <span
+            class="text-xl font-black text-neutral-900 dark:text-white uppercase tracking-widest border-t-4 border-yellow-400 pt-1"
+            >Maybank SDB</span
+          >
+          <div class="hidden md:flex gap-6 items-center">
+            <a
+              class="text-yellow-700 dark:text-yellow-400 border-b-2 border-yellow-600 dark:border-yellow-400 pb-1 hover:text-yellow-600 transition-colors duration-300 font-medium"
+              href="dashboard.html"
+              >Beranda</a
+            >
+            <a
+              class="text-neutral-500 dark:text-neutral-400 pb-1 hover:text-yellow-600 transition-colors duration-300 font-medium"
+              href="history.html"
+              >Riwayat</a
+            >
+          </div>
+        </div>
+      </nav>
+
+      <main class="max-w-7xl mx-auto px-6 pt-12 pb-32">
+        <header class="mb-16">
+          <div
+            class="flex flex-col md:flex-row md:items-end justify-between gap-6"
+          >
+            <div class="space-y-3">
+              <h1
+                class="text-5xl font-black font-headline tracking-tight text-on-surface drop-shadow-sm bg-gradient-to-r from-neutral-900 to-neutral-700 bg-clip-text text-transparent"
+              >
+                Beranda Antrian SDB
+              </h1>
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 text-primary font-semibold">
+                  <span class="material-symbols-outlined text-sm"
+                    >calendar_today</span
+                  >
+                  <span
+                    id="current-date"
+                    class="font-label text-sm uppercase tracking-widest text-neutral-800"
+                  ></span>
+                </div>
+                <div
+                  class="flex items-center gap-2 text-neutral-700 font-mono text-xs pl-5 font-bold"
+                >
+                  <span id="current-time">00:00:00 WIB</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <section class="lg:col-span-8 space-y-8">
+            <div class="flex items-center justify-between">
+              <h2 class="text-2xl font-bold font-headline tracking-tight">
+                Pilih Slot Waktu
+              </h2>
+              <span
+                id="slot-count"
+                class="text-xs font-bold font-label uppercase tracking-widest text-on-surface-variant bg-surface-container-high px-3 py-1 rounded-full"
+                >8 Slot Tersedia</span
+              >
+            </div>
+
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+              <button
+                data-time="08:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Pagi
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">08:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="09:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Pagi
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">09:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="10:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Pagi
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">10:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="11:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Siang
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">11:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="12:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Siang
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">12:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="13:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Siang
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">13:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="14:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Siang
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">14:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+              <button
+                data-time="15:00"
+                class="group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10"
+              >
+                <p
+                  class="text-sm font-label uppercase tracking-widest text-on-surface-variant"
+                >
+                  Sore
+                </p>
+                <p class="text-3xl font-headline font-black mt-2">15:00</p>
+                <p
+                  class="slot-status text-xs mt-1 font-medium text-emerald-600"
+                >
+                  Tersedia
+                </p>
+              </button>
+            </div>
+
+            <!-- KOMPONEN TAMBAHAN: IDE 1 & IDE 2 (MENGISI AREA KOSONG) -->
+            <div
+              class="mt-12 space-y-8 bg-white/40 backdrop-blur-md p-6 rounded-2xl border border-white/40 shadow-sm"
+            >
+              <!-- IDE 1: Alur Panduan Antrian Berangkas SDB -->
+              <div class="space-y-4">
+                <h3
+                  class="text-lg font-bold font-headline flex items-center gap-2 text-neutral-800"
+                >
+                  <span class="material-symbols-outlined text-yellow-600"
+                    >account_tree</span
+                  >
+                  Alur Prosedur Kunjungan SDB
+                </h3>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
+                  <div
+                    class="bg-white/80 p-4 rounded-xl border border-neutral-200/50 space-y-1.5 shadow-xs"
+                  >
+                    <div
+                      class="w-6 h-6 rounded-full bg-yellow-400 text-neutral-900 flex items-center justify-center font-bold font-headline"
+                    >
+                      1
+                    </div>
+                    <p class="font-bold text-neutral-900">
+                      Reservasi Slot Online
+                    </p>
+                    <p class="text-neutral-500 leading-relaxed">
+                      Pilih jam kunjungan yang tersedia di halaman ini lalu
+                      amankan ID Tracking Anda.
+                    </p>
+                  </div>
+                  <div
+                    class="bg-white/80 p-4 rounded-xl border border-neutral-200/50 space-y-1.5 shadow-xs"
+                  >
+                    <div
+                      class="w-6 h-6 rounded-full bg-yellow-400 text-neutral-900 flex items-center justify-center font-bold font-headline"
+                    >
+                      2
+                    </div>
+                    <p class="font-bold text-neutral-900">
+                      Kedatangan di Cabang
+                    </p>
+                    <p class="text-neutral-500 leading-relaxed">
+                      Datang ke kantor cabang Maybank terpilih minimal 10 menit
+                      sebelum slot waktu Anda dimulai.
+                    </p>
+                  </div>
+                  <div
+                    class="bg-white/80 p-4 rounded-xl border border-neutral-200/50 space-y-1.5 shadow-xs"
+                  >
+                    <div
+                      class="w-6 h-6 rounded-full bg-yellow-400 text-neutral-900 flex items-center justify-center font-bold font-headline"
+                    >
+                      3
+                    </div>
+                    <p class="font-bold text-neutral-900">Verifikasi & Akses</p>
+                    <p class="text-neutral-500 leading-relaxed">
+                      Tunjukkan ID Tracking ke petugas keamanan / CS untuk
+                      divalidasi menuju ruang khasanah SDB.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- IDE 2: Kotak Informasi & Aturan Penting -->
+              <div
+                class="bg-[#FFFEEA] border border-yellow-500/30 rounded-xl p-5 flex gap-4 items-start shadow-xs"
+              >
+                <span
+                  class="material-symbols-outlined text-yellow-600 shrink-0 mt-0.5"
+                  >info</span
+                >
+                <div class="space-y-2 text-xs text-neutral-700 leading-relaxed">
+                  <p class="font-bold text-neutral-900 text-sm">
+                    Informasi & Syarat Ketentuan Penting:
+                  </p>
+                  <ul class="list-disc list-inside space-y-1 pl-1">
+                    <li>
+                      Nasabah
+                      <span class="font-bold text-neutral-900"
+                        >wajib membawa Kartu Identitas asli (KTP/Paspor)</span
+                      >
+                      serta Kunci Fisik SDB milik pribadi saat berkunjung.
+                    </li>
+                    <li>
+                      Sistem memberikan batas toleransi keterlambatan maksimal
+                      <span class="font-bold text-red-600">15 menit</span> dari
+                      jadwal yang dipilih sebelum kuota otomatis hangus.
+                    </li>
+                    <li>
+                      Demi menjaga privasi penuh dan keamanan tingkat tinggi,
+                      akses ke ruang brankas hanya diizinkan untuk 1 orang
+                      penyewa dalam satu waktu.
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
+            <!-- SELESAI KOMPONEN TAMBAHAN -->
+          </section>
+
+          <aside class="lg:col-span-4">
+            <div
+              class="bg-surface-container-low rounded-3xl p-8 sticky top-32 border border-outline-variant/20 shadow-xl"
+            >
+              <div class="mb-10 text-center">
+                <h2 class="text-2xl font-bold font-headline text-on-surface">
+                  Detail Booking
+                </h2>
+                <p class="text-on-surface-variant text-sm mt-1">
+                  Konfirmasi kunjungan Anda
+                </p>
+              </div>
+              <div class="space-y-8">
+                <div class="bg-white rounded-2xl p-6 shadow-sm">
+                  <div class="flex items-center justify-between mb-4">
+                    <span
+                      class="text-xs font-bold uppercase tracking-widest text-on-surface-variant"
+                      >Waktu Terpilih</span
+                    >
+                  </div>
+                  <div class="flex items-end gap-2">
+                    <span
+                      id="selected-time"
+                      class="text-4xl font-headline font-black text-on-surface"
+                      >-</span
+                    >
+                    <span
+                      id="selected-date"
+                      class="text-on-surface-variant font-medium pb-1"
+                    ></span>
+                  </div>
+                </div>
+                <form id="booking-form" class="space-y-6">
+                  <div class="space-y-2">
+                    <label
+                      class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1"
+                      >Nama Lengkap</label
+                    >
+                    <input
+                      id="nama"
+                      type="text"
+                      class="w-full bg-surface-container-highest border-b-2 border-transparent focus:ring-0 focus:border-primary text-on-surface py-4 px-2 font-medium"
+                      placeholder="Masukkan nama sesuai ID"
+                      required
+                    />
+                  </div>
+                  <div class="space-y-2">
+                    <label
+                      class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1"
+                      >Nomor Telepon</label
+                    >
+                    <input
+                      id="telepon"
+                      type="tel"
+                      class="w-full bg-surface-container-highest border-b-2 border-transparent focus:ring-0 focus:border-primary text-on-surface py-4 px-2 font-medium"
+                      placeholder="+62 812 XXXX XXXX"
+                      required
+                      oninput="this.value = this.value.replace(/[^0-9]/g, '')"
+                    />
+                  </div>
+                  <div class="pt-4 flex flex-col gap-4">
+                    <button
+                      id="confirm-booking"
+                      class="w-full bg-primary-container text-on-primary-container py-5 rounded-xl font-bold font-headline text-lg hover:scale-[1.02] active:scale-95 transition-all shadow-lg"
+                      type="button"
+                    >
+                      Konfirmasi Booking
+                    </button>
+                    <button
+                      id="cancel-booking"
+                      type="button"
+                      class="text-neutral-500"
+                    >
+                      Batalkan
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </aside>
+        </div>
+      </main>
+    </div>
+
+    <!-- MODAL POP-UP KONFIRMASI SUKSES (ID TRACKING) -->
+    <div
+      id="success-modal"
+      class="hidden fixed inset-0 z-[100] flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm transition-opacity duration-300"
+    >
+      <div
+        class="bg-white rounded-3xl p-8 max-w-md w-full text-center shadow-2xl border border-neutral-100 transform scale-95 transition-transform duration-300"
+      >
+        <div
+          class="w-16 h-16 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center mx-auto mb-4"
+        >
+          <span class="material-symbols-outlined text-4xl font-bold"
+            >check_circle</span
+          >
+        </div>
+        <h3 class="text-2xl font-black font-headline text-neutral-900">
+          Booking Berhasil!
+        </h3>
+        <p class="text-neutral-600 mt-3 text-sm leading-relaxed">
+          ID Tracking Anda adalah
+          <span
+            id="modal-tracking-id"
+            class="font-mono font-extrabold text-amber-600 bg-amber-50 px-2 py-1 rounded text-base border border-amber-200/60"
+            >#A-000</span
+          >.
+        </p>
+        <p class="text-neutral-400 mt-2 text-xs">
+          Silakan cek jadwal dan tunggu antrian Anda di halaman riwayat.
+        </p>
+        <button
+          id="modal-close-btn"
+          class="mt-8 w-full bg-neutral-900 hover:bg-neutral-800 text-white py-4 rounded-xl font-bold font-headline transition-all shadow-lg active:scale-95"
+        >
+          Lihat Halaman Riwayat
+        </button>
+      </div>
+    </div>
+
+    <nav
+      class="md:hidden fixed bottom-0 left-0 w-full z-50 bg-neutral-50/70 backdrop-blur-xl flex justify-around items-center px-8 pb-6 pt-3 shadow-lg"
+    >
+      <a
+        class="flex flex-col items-center justify-center bg-yellow-400 text-neutral-900 rounded-full px-6 py-2"
+        href="dashboard.html"
+        ><span class="font-inter text-[10px] font-bold uppercase"
+          >Beranda</span
+        ></a
+      >
+      <a
+        class="flex flex-col items-center justify-center text-neutral-500 px-4 py-2"
+        href="history.html"
+        ><span class="font-inter text-[10px] font-bold uppercase"
+          >Riwayat</span
+        ></a
+      >
+    </nav>
+
+    <!-- FOOTER -->
+    <footer
+      class="w-full bg-[#FDFBF5]/60 backdrop-blur-md border-t border-yellow-600/20 py-6 text-center text-xs font-semibold text-neutral-800 tracking-wider"
+    >
+      <div
+        class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4"
+      >
+        <p>
+          © 2026 PT Bank Maybank Indonesia Tbk. All Rights Reserved. Made by The
+          Digital Dreamers
+        </p>
+        <p class="font-headline text-[10px] uppercase text-neutral-500">
+          Sistem Layanan Manajemen Antrian Safe Deposit Box
+        </p>
+      </div>
+    </footer>
+
+    <script src="script.js"></script>
+  </body>
+</html>
