@@ -5,6 +5,8 @@
 let selectedTime = null;
 
 document.addEventListener("DOMContentLoaded", () => {
+  initMobileMenu(); // Inisialisasi Hamburger Menu di mobile size
+
   if (document.getElementById("booking-form")) {
     initDashboard();
     initClock(); // Jalankan jam real-time jika berada di halaman beranda
@@ -16,6 +18,28 @@ document.addEventListener("DOMContentLoaded", () => {
     initHistory();
   }
 });
+
+// LOGIKA HAMBURGER MENU UNTUK UKURAN MOBILE
+function initMobileMenu() {
+  const menuBtn = document.getElementById("mobile-menu-btn");
+  const dropdown = document.getElementById("mobile-dropdown");
+
+  if (menuBtn && dropdown) {
+    menuBtn.addEventListener("click", () => {
+      dropdown.classList.toggle("hidden");
+      
+      // Mengubah icon menu menjadi close jika sedang aktif (optional enhancement)
+      const icon = menuBtn.querySelector(".material-symbols-outlined");
+      if (icon) {
+        if (dropdown.classList.contains("hidden")) {
+          icon.textContent = "menu";
+        } else {
+          icon.textContent = "close";
+        }
+      }
+    });
+  }
+}
 
 // LOGIKA JAM DIGITAL BERJALAN (REAL-TIME CLOCK)
 function initClock() {
@@ -145,15 +169,27 @@ function initDashboard() {
       }
 
       const teleponValue = teleponInput.value.trim();
-      const angkaRegex = /^[0-9]+$/;
-      if (!angkaRegex.test(teleponValue)) {
+
+      // Validasi format nomor seluler Indonesia:
+      // - Wajib diawali "08" (format lokal umum untuk nomor HP)
+      // - Digit ketiga tidak boleh 0 (mencegah pola tidak wajar seperti "0800000000")
+      // - Total panjang 10-13 digit, sesuai rentang nomor operator di Indonesia
+      const teleponRegex = /^08[1-9][0-9]{7,10}$/;
+
+      if (!/^[0-9]+$/.test(teleponValue)) {
         alert("Nomor telepon harus berupa angka");
         return;
       }
 
-      // Validasi panjang karakter nomor telepon (minimal 10 digit dan maksimal 13 digit)
       if (teleponValue.length < 10 || teleponValue.length > 13) {
         alert("Nomor telepon harus berukuran antara 10 sampai 13 digit angka!");
+        return;
+      }
+
+      if (!teleponRegex.test(teleponValue)) {
+        alert(
+          "Nomor telepon tidak valid. Gunakan format nomor HP Indonesia yang diawali 08, contoh: 081234567890",
+        );
         return;
       }
 
@@ -187,15 +223,19 @@ function initDashboard() {
       if (successModal && modalTrackingId) {
         modalTrackingId.textContent = "#" + trackingId;
         successModal.classList.remove("hidden");
-
-        // Aksi ketika tombol di dalam modal diklik baru pindah halaman
-        modalCloseBtn.addEventListener("click", () => {
-          window.location.href = "history.html";
-        });
       } else {
         alert("Booking Berhasil dilakukan! ID Tracking Anda: #" + trackingId);
         window.location.href = "history.html";
       }
+    });
+  }
+
+  // Aksi ketika tombol di dalam modal diklik baru pindah halaman
+  // (didaftarkan sekali di sini, bukan di dalam handler confirmBtn,
+  // supaya listener tidak menumpuk setiap kali booking dilakukan)
+  if (modalCloseBtn) {
+    modalCloseBtn.addEventListener("click", () => {
+      window.location.href = "history.html";
     });
   }
 
@@ -246,7 +286,7 @@ function initHistory() {
         const countdownText = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
 
         activeHtml += `
-          <tr class="hover:bg-yellow-50/20 transition bg-white/80">
+          <tr class="hover:bg-yellow-50/20 transition bg-white/80 text-center">
             <td class="p-4 font-bold text-yellow-700">#${item.id}</td>
             <td class="p-4 font-semibold text-on-surface">${item.nama}</td>
             <td class="p-4 text-neutral-600 font-mono">${item.telepon}</td>
@@ -254,7 +294,7 @@ function initHistory() {
               <div class="font-medium text-on-surface">${item.tanggal}</div>
               <div class="text-xs text-neutral-400">${item.waktu} WIB</div>
             </td>
-            <td class="p-4 flex flex-col gap-1">
+            <td class="p-4 flex flex-col items-center justify-center gap-1">
               <span class="bg-yellow-100 text-yellow-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider w-max">Menunggu SDB</span>
               <span class="text-xs text-red-500 font-mono font-bold">⏱️ Selesai dalam ${countdownText}</span>
             </td>
@@ -269,7 +309,7 @@ function initHistory() {
 
     // Baris Dummy Statis "Anto"
     completedHtml += `
-      <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60">
+      <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60 text-center">
         <td class="p-4 font-bold text-neutral-400">#A-882</td>
         <td class="p-4 font-semibold text-neutral-500">Anto (Contoh Dummy)</td>
         <td class="p-4 text-neutral-400 font-mono">081299887766</td>
@@ -277,7 +317,7 @@ function initHistory() {
           <div class="font-medium">09 Juni 2026</div>
           <div>10:00 WIB</div>
         </td>
-        <td class="p-4">
+        <td class="p-4 flex justify-center items-center">
           <span class="bg-green-100 text-green-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Selesai SDB</span>
         </td>
       </tr>
@@ -285,7 +325,7 @@ function initHistory() {
 
     completedList.forEach((item) => {
       completedHtml += `
-        <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60">
+        <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60 text-center">
           <td class="p-4 font-bold text-neutral-400">#${item.id}</td>
           <td class="p-4 font-semibold text-neutral-500">${item.nama}</td>
           <td class="p-4 text-neutral-400 font-mono">${item.telepon}</td>
@@ -293,7 +333,7 @@ function initHistory() {
             <div class="font-medium">${item.tanggal}</div>
             <div>${item.waktu} WIB</div>
           </td>
-          <td class="p-4">
+          <td class="p-4 flex justify-center items-center">
             <span class="bg-green-100 text-green-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Selesai SDB</span>
           </td>
         </tr>
