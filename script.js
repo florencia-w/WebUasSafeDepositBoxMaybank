@@ -259,6 +259,9 @@ function initDashboard() {
 function initHistory() {
   const activeTableBody = document.getElementById("dynamic-history-table");
   const completedTableBody = document.getElementById("completed-history-table");
+  const statActive = document.getElementById("stat-active-count");
+  const statCompleted = document.getElementById("stat-completed-count");
+  const statTotal = document.getElementById("stat-total-count");
 
   function renderTables() {
     const allBookings =
@@ -267,6 +270,12 @@ function initHistory() {
 
     const activeList = allBookings.filter((item) => now < item.endTime);
     const completedList = allBookings.filter((item) => now >= item.endTime);
+
+    // +1 pada jumlah selesai karena selalu ada 1 baris data contoh (dummy "Anto")
+    // yang tampil statis di tabel kegiatan selesai.
+    if (statActive) statActive.textContent = activeList.length;
+    if (statCompleted) statCompleted.textContent = completedList.length + 1;
+    if (statTotal) statTotal.textContent = activeList.length + completedList.length + 1;
 
     // 1. RENDER TABEL TERBARU (AKTIF)
     if (activeList.length === 0) {
@@ -296,7 +305,7 @@ function initHistory() {
             </td>
             <td class="p-4 flex flex-col items-center justify-center gap-1">
               <span class="bg-yellow-100 text-yellow-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider w-max">Menunggu SDB</span>
-              <span class="text-xs text-red-500 font-mono font-bold">⏱️ Selesai dalam ${countdownText}</span>
+              <span class="text-xs text-red-500 font-mono font-bold animate-pulse">⏱️ Selesai dalam ${countdownText}</span>
             </td>
           </tr>
         `;
