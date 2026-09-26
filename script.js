@@ -1,63 +1,52 @@
 // ==========================================
-// FILE JAVASCRIPT UTAMA (script.js)
+// FILE JAVASCRIPT UTAMA (script.js) - VERSI FINAL DIPERBAIKI
 // ==========================================
 
 let selectedTime = null;
 
 document.addEventListener("DOMContentLoaded", () => {
-  initMobileMenu(); // Inisialisasi Hamburger Menu di mobile size
-
+  initMobileMenu();
   if (document.getElementById("booking-form")) {
     initDashboard();
-    initClock(); // Jalankan jam real-time jika berada di halaman beranda
+    initClock();
   }
-  if (
-    document.getElementById("dynamic-history-table") ||
-    document.getElementById("completed-history-table")
-  ) {
+  if (document.getElementById("dynamic-history-table") || document.getElementById("completed-history-table")) {
     initHistory();
   }
 });
 
-// LOGIKA HAMBURGER MENU UNTUK UKURAN MOBILE
+// ==========================================
+// HAMBURGER MENU
+// ==========================================
 function initMobileMenu() {
   const menuBtn = document.getElementById("mobile-menu-btn");
   const dropdown = document.getElementById("mobile-dropdown");
-
   if (menuBtn && dropdown) {
     menuBtn.addEventListener("click", () => {
       dropdown.classList.toggle("hidden");
-      
-      // Mengubah icon menu menjadi close jika sedang aktif (optional enhancement)
       const icon = menuBtn.querySelector(".material-symbols-outlined");
-      if (icon) {
-        if (dropdown.classList.contains("hidden")) {
-          icon.textContent = "menu";
-        } else {
-          icon.textContent = "close";
-        }
-      }
+      if (icon) icon.textContent = dropdown.classList.contains("hidden") ? "menu" : "close";
     });
   }
 }
 
-// LOGIKA JAM DIGITAL BERJALAN (REAL-TIME CLOCK)
+// ==========================================
+// JAM DIGITAL
+// ==========================================
 function initClock() {
   const timeElement = document.getElementById("current-time");
   if (!timeElement) return;
-
   setInterval(() => {
     const now = new Date();
     let jam = now.getHours().toString().padStart(2, "0");
     let menit = now.getMinutes().toString().padStart(2, "0");
     let detik = now.getSeconds().toString().padStart(2, "0");
-
     timeElement.textContent = `${jam} : ${menit} : ${detik} WIB`;
   }, 1000);
 }
 
 // ==========================================
-// LOGIKA UNTUK HALAMAN DASHBOARD
+// DASHBOARD & BOOKING
 // ==========================================
 function initDashboard() {
   const form = document.getElementById("booking-form");
@@ -70,71 +59,81 @@ function initDashboard() {
   const selectedDateText = document.getElementById("selected-date");
   const namaInput = document.getElementById("nama");
   const teleponInput = document.getElementById("telepon");
-
-  // Elemen-elemen Modal Sukses
   const successModal = document.getElementById("success-modal");
   const modalTrackingId = document.getElementById("modal-tracking-id");
   const modalCloseBtn = document.getElementById("modal-close-btn");
 
-  // Ambil data slot dan riwayat dari localStorage
-  let bookedSlots =
-    JSON.parse(localStorage.getItem("runtimeBookedSlots")) || [];
-  let bookingHistory =
-    JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
+  const typeRadios = document.querySelectorAll('input[name="booking-type"]');
+  const preDateSection = document.getElementById("pre-date-section");
+  const samedayNoteSection = document.getElementById("sameday-note-section");
+  const preDateInput = document.getElementById("pre-date");
 
-  // Mengubah efek visual slot waktu yang sudah dibooking menjadi "Penuh" dan disabled
-  buttons.forEach((btn) => {
-    const btnTime = btn.getAttribute("data-time");
-    const statusTextElement = btn.querySelector(".slot-status");
-
-    if (bookedSlots.includes(btnTime)) {
-      btn.className =
-        "group relative overflow-hidden bg-neutral-200/70 p-6 rounded-xl text-left cursor-not-allowed border border-neutral-300 opacity-60 pointer-events-none";
-      btn.disabled = true;
-      if (statusTextElement) {
-        statusTextElement.textContent = "Penuh";
-        statusTextElement.className =
-          "slot-status text-xs mt-1 font-bold text-red-600";
-      }
-    } else {
-      btn.className =
-        "group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10";
-      btn.disabled = false;
-      if (statusTextElement) {
-        statusTextElement.textContent = "Tersedia";
-        statusTextElement.className =
-          "slot-status text-xs mt-1 font-medium text-emerald-600";
-      }
-    }
-  });
+  let bookedSlots = JSON.parse(localStorage.getItem("runtimeBookedSlots")) || [];
+  let bookingHistory = JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
 
   const hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"];
-  const bulan = [
-    "Januari",
-    "Februari",
-    "Maret",
-    "April",
-    "Mei",
-    "Juni",
-    "Juli",
-    "Agustus",
-    "September",
-    "Oktober",
-    "November",
-    "Desember",
-  ];
+  const bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const bulanSingkat = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Desember"];
   const today = new Date();
   const formattedFullDate = `${hari[today.getDay()]}, ${today.getDate()} ${bulan[today.getMonth()]} ${today.getFullYear()}`;
-  const formattedShortDate = `${today.getDate()} ${bulan[today.getMonth()].substring(0, 3)} ${today.getFullYear()}`;
+  const formattedShortDate = `${today.getDate()} ${bulanSingkat[today.getMonth()]} ${today.getFullYear()}`;
 
   if (currentDateText) currentDateText.textContent = formattedFullDate;
   if (selectedDateText) selectedDateText.textContent = formattedShortDate;
 
+  if (preDateInput) {
+    const tomorrow = new Date();
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    preDateInput.min = tomorrow.toISOString().split('T')[0];
+  }
+
+  // Update tanggal yang ditampilkan saat pilih tanggal pre-booking
+  if (preDateInput && selectedDateText) {
+    preDateInput.addEventListener('change', () => {
+      const val = preDateInput.value;
+      if (!val) return;
+      const [thn, bln, tgl] = val.split('-');
+      selectedDateText.textContent = `${parseInt(tgl)} ${bulanSingkat[parseInt(bln)-1]} ${thn}`;
+    });
+  }
+
+  typeRadios.forEach(radio => {
+    radio.addEventListener('change', () => {
+      preDateSection.classList.add('hidden');
+      samedayNoteSection.classList.add('hidden');
+      if (radio.value === 'pre') preDateSection.classList.remove('hidden');
+      else if (radio.value === 'sameday') samedayNoteSection.classList.remove('hidden');
+      else if (selectedDateText) selectedDateText.textContent = formattedShortDate;
+    });
+  });
+
+  // Update tampilan slot waktu
+  function refreshSlots() {
+    buttons.forEach((btn) => {
+      const btnTime = btn.getAttribute("data-time");
+      const statusTextElement = btn.querySelector(".slot-status");
+      if (bookedSlots.includes(btnTime)) {
+        btn.className = "group relative overflow-hidden bg-neutral-200/70 p-6 rounded-xl text-left cursor-not-allowed border border-neutral-300 opacity-60 pointer-events-none";
+        btn.disabled = true;
+        if (statusTextElement) {
+          statusTextElement.textContent = "Penuh";
+          statusTextElement.className = "slot-status text-xs mt-1 font-bold text-red-600";
+        }
+      } else {
+        btn.className = "group relative overflow-hidden bg-surface-container-lowest p-6 rounded-xl text-left transition-all duration-300 hover:scale-[1.02] hover:-translate-y-1 hover:bg-primary-container active:scale-95 shadow-sm border border-outline-variant/10";
+        btn.disabled = false;
+        if (statusTextElement) {
+          statusTextElement.textContent = "Tersedia";
+          statusTextElement.className = "slot-status text-xs mt-1 font-medium text-emerald-600";
+        }
+      }
+    });
+  }
+  refreshSlots();
+
   function updateSlotCount() {
     if (slotCountText) {
-      const available = Array.from(buttons).filter(
-        (btn) => !btn.disabled,
-      ).length;
+      const available = Array.from(buttons).filter(b => !b.disabled).length;
       slotCountText.textContent = available + " Slot Tersedia";
     }
   }
@@ -145,116 +144,107 @@ function initDashboard() {
       if (btn.disabled) return;
       selectedTime = btn.getAttribute("data-time");
       if (selectedTimeText) selectedTimeText.textContent = selectedTime;
-
-      // Bersihkan style aktif dari tombol lain yang tidak ter-disabled
-      buttons.forEach((b) => {
-        if (!b.disabled) {
-          b.classList.remove("bg-primary-container", "ring-2", "ring-primary");
-        }
-      });
+      buttons.forEach(b => !b.disabled && b.classList.remove("bg-primary-container", "ring-2", "ring-primary"));
       btn.classList.add("bg-primary-container", "ring-2", "ring-primary");
     });
   });
 
   if (confirmBtn) {
     confirmBtn.addEventListener("click", () => {
-      if (!selectedTime) {
-        alert("Pilih waktu dulu!");
-        return;
-      }
-
-      if (!namaInput.value.trim() || !teleponInput.value.trim()) {
-        alert("Lengkapi data dulu!");
-        return;
-      }
+      if (!selectedTime) { alert("Pilih waktu dulu!"); return; }
+      if (!namaInput.value.trim() || !teleponInput.value.trim()) { alert("Lengkapi data dulu!"); return; }
 
       const teleponValue = teleponInput.value.trim();
+      if (!/^[0-9]+$/.test(teleponValue)) { alert("Nomor telepon harus berupa angka"); return; }
+      if (teleponValue.length < 10 || teleponValue.length > 13) { alert("Nomor telepon 10-13 digit!"); return; }
+      if (!/^08[1-9][0-9]{7,10}$/.test(teleponValue)) { alert("Format salah, gunakan 08xxx..."); return; }
 
-      // Validasi format nomor seluler Indonesia:
-      // - Wajib diawali "08" (format lokal umum untuk nomor HP)
-      // - Digit ketiga tidak boleh 0 (mencegah pola tidak wajar seperti "0800000000")
-      // - Total panjang 10-13 digit, sesuai rentang nomor operator di Indonesia
-      const teleponRegex = /^08[1-9][0-9]{7,10}$/;
+      const selectedType = document.querySelector('input[name="booking-type"]:checked')?.value || 'normal';
+      let tanggalTampilan = formattedShortDate;
+      let endTime;
 
-      if (!/^[0-9]+$/.test(teleponValue)) {
-        alert("Nomor telepon harus berupa angka");
-        return;
+      if (selectedType === 'pre') {
+        const tglTarget = preDateInput?.value;
+        if (!tglTarget) { alert('Pilih tanggal dulu!'); return; }
+        const [thn, bln, tgl] = tglTarget.split('-');
+        tanggalTampilan = `${parseInt(tgl)} ${bulanSingkat[parseInt(bln)-1]} ${thn}`;
+        // Pre-booking: endTime = tanggal yang dipilih + 30 menit
+        const targetDate = new Date(tglTarget + 'T' + selectedTime);
+        endTime = targetDate.getTime() + 30 * 60 * 1000;
+      } else if (selectedType === 'sameday') {
+        const jamPilih = parseInt(selectedTime.split(':')[0]);
+        if (jamPilih - new Date().getHours() < 2) { alert('Minimal 2 jam dari sekarang!'); return; }
+        endTime = Date.now() + 30 * 60 * 1000;
+      } else {
+        endTime = Date.now() + 5 * 60 * 1000;
       }
 
-      if (teleponValue.length < 10 || teleponValue.length > 13) {
-        alert("Nomor telepon harus berukuran antara 10 sampai 13 digit angka!");
-        return;
-      }
-
-      if (!teleponRegex.test(teleponValue)) {
-        alert(
-          "Nomor telepon tidak valid. Gunakan format nomor HP Indonesia yang diawali 08, contoh: 081234567890",
-        );
-        return;
-      }
-
-      // Durasi hitung mundur diubah menjadi 5 menit agar lebih realistis di localStorage
-      const durationMs = 5 * 60 * 1000;
-      const endTime = Date.now() + durationMs;
-
+      // TAMBAH SLOT HANYA SEKALI
       if (!bookedSlots.includes(selectedTime)) {
         bookedSlots.push(selectedTime);
         localStorage.setItem("runtimeBookedSlots", JSON.stringify(bookedSlots));
       }
 
       const trackingId = "A-" + Math.floor(100 + Math.random() * 900);
+      const statusText = selectedType === 'pre' ? 'Pre-Booking Terdaftar' :
+                         selectedType === 'sameday' ? 'Appointment Khusus' : 'Antrian Berhasil';
+
       const dataBaru = {
         id: trackingId,
         nama: namaInput.value.trim(),
         telepon: teleponValue,
-        tanggal: formattedShortDate,
+        tanggal: tanggalTampilan,
         waktu: selectedTime,
         endTime: endTime,
-        status: "Antrian Berhasil",
+        status: statusText
       };
 
       bookingHistory.unshift(dataBaru);
-      localStorage.setItem(
-        "runtimeActiveBookings",
-        JSON.stringify(bookingHistory),
-      );
+      localStorage.setItem("runtimeActiveBookings", JSON.stringify(bookingHistory));
 
-      // Menampilkan ID Tracking di Modal Pop-up sebelum redireksi halaman
       if (successModal && modalTrackingId) {
         modalTrackingId.textContent = "#" + trackingId;
         successModal.classList.remove("hidden");
       } else {
-        alert("Booking Berhasil dilakukan! ID Tracking Anda: #" + trackingId);
+        alert("Berhasil! ID: #" + trackingId);
         window.location.href = "history.html";
       }
     });
   }
 
-  // Aksi ketika tombol di dalam modal diklik baru pindah halaman
-  // (didaftarkan sekali di sini, bukan di dalam handler confirmBtn,
-  // supaya listener tidak menumpuk setiap kali booking dilakukan)
   if (modalCloseBtn) {
-    modalCloseBtn.addEventListener("click", () => {
-      window.location.href = "history.html";
-    });
+    modalCloseBtn.addEventListener("click", () => window.location.href = "history.html");
   }
 
   if (cancelBtn) {
     cancelBtn.addEventListener("click", () => {
       selectedTime = null;
       if (selectedTimeText) selectedTimeText.textContent = "-";
+      if (selectedDateText) selectedDateText.textContent = formattedShortDate;
       form.reset();
-      buttons.forEach((b) => {
-        if (!b.disabled) {
-          b.classList.remove("bg-primary-container", "ring-2", "ring-primary");
-        }
-      });
+      buttons.forEach(b => !b.disabled && b.classList.remove("bg-primary-container", "ring-2", "ring-primary"));
+      preDateSection.classList.add('hidden');
+      samedayNoteSection.classList.add('hidden');
+      document.querySelector('input[name="booking-type"][value="normal"]').checked = true;
     });
   }
 }
 
 // ==========================================
-// LOGIKA UNTUK HALAMAN HISTORY
+// DATA PENYIMPANAN TAMBAHAN
+// ==========================================
+let preBookingData = JSON.parse(localStorage.getItem('preBookingList')) || [];
+let canceledData = JSON.parse(localStorage.getItem('canceledList')) || [];
+let rescheduleData = JSON.parse(localStorage.getItem('rescheduleList')) || [];
+
+function saveAllData() {
+  localStorage.setItem('preBookingList', JSON.stringify(preBookingData));
+  localStorage.setItem('canceledList', JSON.stringify(canceledData));
+  localStorage.setItem('rescheduleList', JSON.stringify(rescheduleData));
+}
+
+// ==========================================
+// HALAMAN HISTORY
 // ==========================================
 function initHistory() {
   const activeTableBody = document.getElementById("dynamic-history-table");
@@ -264,35 +254,26 @@ function initHistory() {
   const statTotal = document.getElementById("stat-total-count");
 
   function renderTables() {
-    const allBookings =
-      JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
+    const allBookings = JSON.parse(localStorage.getItem("runtimeActiveBookings")) || [];
     const now = Date.now();
 
-    const activeList = allBookings.filter((item) => now < item.endTime);
-    const completedList = allBookings.filter((item) => now >= item.endTime);
+    const activeList = allBookings.filter(item => now < item.endTime);
+    const completedList = allBookings.filter(item => now >= item.endTime);
 
-    // +1 pada jumlah selesai karena selalu ada 1 baris data contoh (dummy "Anto")
-    // yang tampil statis di tabel kegiatan selesai.
     if (statActive) statActive.textContent = activeList.length;
     if (statCompleted) statCompleted.textContent = completedList.length + 1;
     if (statTotal) statTotal.textContent = activeList.length + completedList.length + 1;
 
-    // 1. RENDER TABEL TERBARU (AKTIF)
+    // TABEL AKTIF
     if (activeList.length === 0) {
-      activeTableBody.innerHTML = `
-        <tr>
-          <td colspan="5" class="p-8 text-center text-neutral-400 bg-white/50 italic">
-            Belum ada data antrian terbaru saat ini.
-          </td>
-        </tr>
-      `;
+      activeTableBody.innerHTML = `<tr><td colspan="5" class="p-8 text-center text-neutral-400 bg-white/50 italic">Belum ada data antrian terbaru saat ini.</td></tr>`;
     } else {
       let activeHtml = "";
-      activeList.forEach((item) => {
-        const timeLeft = Math.max(0, Math.ceil((item.endTime - now) / 1000));
-        const minutes = Math.floor(timeLeft / 60);
-        const seconds = timeLeft % 60;
-        const countdownText = `${minutes}:${seconds < 10 ? "0" : ""}${seconds}`;
+      activeList.forEach(item => {
+        const sisa = Math.max(0, Math.ceil((item.endTime - now) / 1000));
+        const m = Math.floor(sisa / 60);
+        const d = sisa % 60;
+        const countdownText = `${m}:${d<10?'0':''}${d}`;
 
         activeHtml += `
           <tr class="hover:bg-yellow-50/20 transition bg-white/80 text-center">
@@ -303,21 +284,22 @@ function initHistory() {
               <div class="font-medium text-on-surface">${item.tanggal}</div>
               <div class="text-xs text-neutral-400">${item.waktu} WIB</div>
             </td>
-            <td class="p-4 flex flex-col items-center justify-center gap-1">
-              <span class="bg-yellow-100 text-yellow-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider w-max">Menunggu SDB</span>
+            <td class="p-4 flex flex-col items-center justify-center gap-2">
+              <span class="bg-yellow-100 text-yellow-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider w-max">${item.status}</span>
               <span class="text-xs text-red-500 font-mono font-bold animate-pulse">⏱️ Selesai dalam ${countdownText}</span>
+              <div class="flex gap-1 mt-1">
+                <button class="cancel-btn text-xs bg-red-500 text-white px-2 py-1 rounded hover:bg-red-600" data-id="${item.id}">Batalkan</button>
+                <button class="reschedule-btn text-xs bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600" data-id="${item.id}">Ubah Jadwal</button>
+                <button class="rebook-btn text-xs bg-green-500 text-white px-2 py-1 rounded hover:bg-green-600" data-id="${item.id}">Re-Book</button>
+              </div>
             </td>
-          </tr>
-        `;
+          </tr>`;
       });
       activeTableBody.innerHTML = activeHtml;
     }
 
-    // 2. RENDER TABEL SELESAI (DENGAN DUMMY DATA ANTO)
-    let completedHtml = "";
-
-    // Baris Dummy Statis "Anto"
-    completedHtml += `
+    // TABEL SELESAI + DATA CONTOH
+    let completedHtml = `
       <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60 text-center">
         <td class="p-4 font-bold text-neutral-400">#A-882</td>
         <td class="p-4 font-semibold text-neutral-500">Anto (Contoh Dummy)</td>
@@ -329,10 +311,9 @@ function initHistory() {
         <td class="p-4 flex justify-center items-center">
           <span class="bg-green-100 text-green-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Selesai SDB</span>
         </td>
-      </tr>
-    `;
+      </tr>`;
 
-    completedList.forEach((item) => {
+    completedList.forEach(item => {
       completedHtml += `
         <tr class="hover:bg-neutral-50/50 transition opacity-75 bg-white/60 text-center">
           <td class="p-4 font-bold text-neutral-400">#${item.id}</td>
@@ -345,8 +326,7 @@ function initHistory() {
           <td class="p-4 flex justify-center items-center">
             <span class="bg-green-100 text-green-800 text-[10px] font-extrabold uppercase px-2.5 py-1 rounded-full tracking-wider">Selesai SDB</span>
           </td>
-        </tr>
-      `;
+        </tr>`;
     });
 
     completedTableBody.innerHTML = completedHtml;
@@ -354,4 +334,216 @@ function initHistory() {
 
   renderTables();
   setInterval(renderTables, 1000);
+}
+
+// ==========================================
+// MODAL & FUNGSI AKSI (Cancel, Reschedule, Re-Book)
+// ==========================================
+let currentActionBookingId = null;
+let modalCallback = null;
+
+document.addEventListener('DOMContentLoaded', () => {
+  const modal = document.getElementById('action-modal');
+  const modalTitle = document.getElementById('modal-action-title');
+  const modalContent = document.getElementById('modal-action-content');
+  const modalClose = document.getElementById('modal-action-close');
+  const modalConfirm = document.getElementById('modal-action-confirm');
+
+  if (!modal) return;
+
+  modalClose.addEventListener('click', () => {
+    modal.classList.add('hidden');
+    modalCallback = null;
+  });
+
+  modalConfirm.addEventListener('click', () => {
+    if (modalCallback) modalCallback();
+    modal.classList.add('hidden');
+  });
+
+  window.openActionModal = function(judul, isi, teksKonfirmasi, warna = 'bg-yellow-500') {
+    modalTitle.textContent = judul;
+    modalContent.innerHTML = isi;
+    modalConfirm.textContent = teksKonfirmasi;
+    modalConfirm.className = `px-4 py-2 ${warna} text-white rounded-lg hover:opacity-90 transition-colors font-medium`;
+    modal.classList.remove('hidden');
+  };
+
+  document.addEventListener('click', (e) => {
+    // CANCEL
+    if (e.target.classList.contains('cancel-btn')) {
+      const id = e.target.dataset.id;
+      currentActionBookingId = id;
+      openActionModal(
+        'Batalkan Pemesanan',
+        `<p class="mb-3">Yakin ingin membatalkan pemesanan <strong>#${id}</strong>?</p>
+         <label class="block text-sm mb-1">Alasan pembatalan:</label>
+         <textarea id="alasan-cancel" rows="2" class="w-full p-2 border rounded-lg" placeholder="Tulis alasan..."></textarea>`,
+        'Ya, Batalkan',
+        'bg-red-500'
+      );
+      modalCallback = () => {
+        const alasan = document.getElementById('alasan-cancel')?.value || 'Tidak ada keterangan';
+        cancelBooking(id, alasan);
+      };
+    }
+
+    // RESCHEDULE
+    if (e.target.classList.contains('reschedule-btn')) {
+      const id = e.target.dataset.id;
+      currentActionBookingId = id;
+      openActionModal(
+        'Ubah Jadwal Pemesanan',
+        `<p class="mb-3 text-sm">Pilih tanggal dan waktu baru untuk pemesanan <strong>#${id}</strong></p>
+         <label class="block text-sm mb-1">Tanggal Baru:</label>
+         <input type="date" id="tgl-baru" class="w-full p-2 border rounded-lg mb-3">
+         <label class="block text-sm mb-1">Waktu Baru:</label>
+         <select id="waktu-baru" class="w-full p-2 border rounded-lg mb-3">
+           <option value="08:00">08:00</option><option value="09:00">09:00</option>
+           <option value="10:00">10:00</option><option value="11:00">11:00</option>
+           <option value="12:00">12:00</option><option value="13:00">13:00</option>
+           <option value="14:00">14:00</option><option value="15:00">15:00</option>
+         </select>
+         <label class="block text-sm mb-1">Alasan perubahan:</label>
+         <textarea id="alasan-reschedule" rows="2" class="w-full p-2 border rounded-lg" placeholder="Tulis alasan..."></textarea>`,
+        'Simpan Perubahan',
+        'bg-blue-600'
+      );
+      modalCallback = () => {
+        const tglBaru = document.getElementById('tgl-baru')?.value;
+        const waktuBaru = document.getElementById('waktu-baru')?.value;
+        const alasan = document.getElementById('alasan-reschedule')?.value || 'Tidak ada keterangan';
+        if (!tglBaru || !waktuBaru) { alert('Lengkapi tanggal dan waktu!'); return false; }
+        rescheduleBooking(id, tglBaru, waktuBaru, alasan);
+      };
+    }
+
+    // RE-BOOK
+    if (e.target.classList.contains('rebook-btn')) {
+      const id = e.target.dataset.id;
+      currentActionBookingId = id;
+      openActionModal(
+        'Buat Pemesanan Ulang',
+        `<p class="mb-3 text-sm">Buat pemesanan baru berdasarkan data pemesanan <strong>#${id}</strong></p>
+         <label class="block text-sm mb-1">Tanggal Pemesanan Baru:</label>
+         <input type="date" id="rebook-tgl" class="w-full p-2 border rounded-lg mb-3">
+         <label class="block text-sm mb-1">Waktu:</label>
+         <select id="rebook-waktu" class="w-full p-2 border rounded-lg mb-3">
+           <option value="08:00">08:00</option><option value="09:00">09:00</option>
+           <option value="10:00">10:00</option><option value="11:00">11:00</option>
+           <option value="12:00">12:00</option><option value="13:00">13:00</option>
+           <option value="14:00">14:00</option><option value="15:00">15:00</option>
+         </select>`,
+        'Buat Pemesanan',
+        'bg-green-600'
+      );
+      modalCallback = () => {
+        const tgl = document.getElementById('rebook-tgl')?.value;
+        const waktu = document.getElementById('rebook-waktu')?.value;
+        if (!tgl || !waktu) { alert('Lengkapi tanggal dan waktu!'); return false; }
+        rebookFromPrevious(id, tgl, waktu);
+      };
+    }
+  });
+});
+
+// ==========================================
+// FUNGSI: CANCEL BOOKING
+// ==========================================
+function cancelBooking(bookingId, alasan) {
+  let allBookings = JSON.parse(localStorage.getItem('runtimeActiveBookings')) || [];
+  const idx = allBookings.findIndex(b => b.id === bookingId);
+  if (idx === -1) { alert('❌ Pemesanan tidak ditemukan!'); return; }
+
+  const item = allBookings[idx];
+  canceledData.unshift({
+    ...item,
+    alasanDibatalkan: alasan,
+    waktuDibatalkan: new Date().toLocaleString('id-ID')
+  });
+
+  let bookedSlots = JSON.parse(localStorage.getItem('runtimeBookedSlots')) || [];
+  bookedSlots = bookedSlots.filter(s => s !== item.waktu);
+  localStorage.setItem('runtimeBookedSlots', JSON.stringify(bookedSlots));
+
+  allBookings.splice(idx, 1);
+  localStorage.setItem('runtimeActiveBookings', JSON.stringify(allBookings));
+
+  saveAllData();
+  alert(`✅ Pemesanan #${bookingId} telah dibatalkan.\nSlot waktu ${item.waktu} dikembalikan.`);
+  location.reload();
+}
+
+// ==========================================
+// FUNGSI: RESCHEDULE
+// ==========================================
+function rescheduleBooking(bookingId, tglBaru, waktuBaru, alasan) {
+  let allBookings = JSON.parse(localStorage.getItem('runtimeActiveBookings')) || [];
+  const idx = allBookings.findIndex(b => b.id === bookingId);
+  if (idx === -1) { alert('❌ Pemesanan tidak ditemukan!'); return; }
+
+  const itemLama = {...allBookings[idx]};
+  let bookedSlots = JSON.parse(localStorage.getItem('runtimeBookedSlots')) || [];
+  bookedSlots = bookedSlots.filter(s => s !== itemLama.waktu);
+  if (!bookedSlots.includes(waktuBaru)) bookedSlots.push(waktuBaru);
+  localStorage.setItem('runtimeBookedSlots', JSON.stringify(bookedSlots));
+
+  const bulanSingkat = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Desember"];
+  const [thn, bln, tgl] = tglBaru.split('-');
+  const tampilTanggal = `${parseInt(tgl)} ${bulanSingkat[parseInt(bln)-1]} ${thn}`;
+  const targetDate = new Date(tglBaru + 'T' + waktuBaru);
+
+  allBookings[idx].tanggal = tampilTanggal;
+  allBookings[idx].waktu = waktuBaru;
+  allBookings[idx].endTime = targetDate.getTime() + 30 * 60 * 1000;
+  allBookings[idx].status = 'Dijadwal Ulang';
+  localStorage.setItem('runtimeActiveBookings', JSON.stringify(allBookings));
+
+  rescheduleData.unshift({
+    id: 'RS-' + Math.floor(100 + Math.random() * 900),
+    bookingAsliId: bookingId,
+    dari: `${itemLama.tanggal} ${itemLama.waktu}`,
+    ke: `${tampilTanggal} ${waktuBaru}`,
+    alasan: alasan,
+    waktuPerubahan: new Date().toLocaleString('id-ID')
+  });
+
+  saveAllData();
+  alert(`✅ Jadwal berhasil diubah!\nDari: ${itemLama.tanggal} ${itemLama.waktu}\nKe: ${tampilTanggal} ${waktuBaru}`);
+  location.reload();
+}
+
+// ==========================================
+// FUNGSI: RE-BOOK
+// ==========================================
+function rebookFromPrevious(bookingId, tglBaru, waktuBaru) {
+  let allBookings = JSON.parse(localStorage.getItem('runtimeActiveBookings')) || [];
+  const dataAsli = allBookings.find(b => b.id === bookingId);
+  if (!dataAsli) { alert('❌ Data tidak ditemukan!'); return; }
+
+  const bulanSingkat = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Ags", "Sep", "Okt", "Nov", "Desember"];
+  const [thn, bln, tgl] = tglBaru.split('-');
+  const tampilTanggal = `${parseInt(tgl)} ${bulanSingkat[parseInt(bln)-1]} ${thn}`;
+  const targetDate = new Date(tglBaru + 'T' + waktuBaru);
+
+  let bookedSlots = JSON.parse(localStorage.getItem('runtimeBookedSlots')) || [];
+  if (!bookedSlots.includes(waktuBaru)) bookedSlots.push(waktuBaru);
+  localStorage.setItem('runtimeBookedSlots', JSON.stringify(bookedSlots));
+
+  const trackingId = "A-" + Math.floor(100 + Math.random() * 900);
+  const dataBaru = {
+    id: trackingId,
+    nama: dataAsli.nama,
+    telepon: dataAsli.telepon,
+    tanggal: tampilTanggal,
+    waktu: waktuBaru,
+    endTime: targetDate.getTime() + 30 * 60 * 1000,
+    status: 'Pemesanan Ulang'
+  };
+
+  allBookings.unshift(dataBaru);
+  localStorage.setItem('runtimeActiveBookings', JSON.stringify(allBookings));
+
+  alert(`✅ Pemesanan ulang berhasil!\nID Baru: #${trackingId}`);
+  location.reload();
 }
