@@ -351,8 +351,7 @@
         class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4"
       >
         <p>
-          © 2026 PT Bank Maybank Indonesia Tbk. All Rights Reserved. Made by The
-          Digital Dreamers
+          © 2026 PT Bank Maybank Indonesia Tbk. All Rights Reserved. Made by PROUJI
         </p>
         <p class="font-headline text-[10px] uppercase text-neutral-500">
           Sistem Layanan Manajemen Antrian Safe Deposit Box
@@ -360,6 +359,18 @@
       </div>
     </footer>
 
+        <!-- === TAMBAHAN: MODAL UNTUK CANCEL, RESCHEDULE, RE-BOOKING === -->
+    <div id="action-modal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-[100] hidden">
+      <div class="bg-white rounded-2xl p-6 max-w-md w-full mx-4 shadow-2xl">
+        <h3 id="modal-action-title" class="text-xl font-bold font-headline text-neutral-900 mb-4"></h3>
+        <div id="modal-action-content" class="mb-5"></div>
+        <div class="flex justify-end gap-3">
+          <button id="modal-action-close" class="px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition-colors">Batal</button>
+          <button id="modal-action-confirm" class="px-4 py-2 bg-yellow-500 text-white rounded-lg hover:bg-yellow-600 transition-colors font-medium">Konfirmasi</button>
+        </div>
+      </div>
+    </div>
+    
     <script src="script.js"></script>
   </body>
 </html>

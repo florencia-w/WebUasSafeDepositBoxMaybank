@@ -539,6 +539,38 @@
                       Batalkan
                     </button>
                   </div>
+                                    <!-- === TAMBAHAN: PILIHAN JENIS BOOKING === -->
+                  <div class="space-y-3 pt-2">
+                    <label class="text-xs font-bold uppercase tracking-widest text-on-surface-variant ml-1">Jenis Pemesanan</label>
+                    <div class="space-y-2">
+                      <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-container-highest">
+                        <input type="radio" name="booking-type" value="normal" checked class="accent-yellow-600">
+                        <span class="text-sm">Booking Hari Ini</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-container-highest">
+                        <input type="radio" name="booking-type" value="pre" class="accent-yellow-600">
+                        <span class="text-sm">Pre-Booking (Hari Lain)</span>
+                      </label>
+                      <label class="flex items-center gap-2 cursor-pointer p-2 rounded-lg hover:bg-surface-container-highest">
+                        <input type="radio" name="booking-type" value="sameday" class="accent-yellow-600">
+                        <span class="text-sm">Appointment Khusus Hari Ini</span>
+                      </label>
+                    </div>
+
+                    <!-- Kolom Tanggal Pre-Booking -->
+                    <div id="pre-date-section" class="hidden mt-2">
+                      <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Pilih Tanggal Kunjungan</label>
+                      <input type="date" id="pre-date" class="w-full bg-surface-container-highest border-b-2 border-transparent focus:ring-0 focus:border-primary text-on-surface py-3 px-2 font-medium">
+                    </div>
+
+                    <!-- Catatan Khusus Hari Sama -->
+                    <div id="sameday-note-section" class="hidden mt-2">
+                      <label class="block text-xs font-bold uppercase tracking-widest text-on-surface-variant mb-1">Catatan Khusus</label>
+                      <textarea id="special-note" rows="2" class="w-full bg-surface-container-highest border-b-2 border-transparent focus:ring-0 focus:border-primary text-on-surface py-3 px-2 font-medium" placeholder="Tulis kebutuhan khusus Anda..."></textarea>
+                      <p class="text-xs text-orange-600 mt-1">Waktu harus minimal 2 jam dari sekarang</p>
+                    </div>
+                  </div>
+                  <!-- === AKHIR TAMBAHAN === -->
                 </form>
               </div>
             </div>
@@ -593,8 +625,7 @@
         class="max-w-7xl mx-auto px-6 flex flex-col sm:flex-row justify-between items-center gap-4"
       >
         <p>
-          © 2026 PT Bank Maybank Indonesia Tbk. All Rights Reserved. Made by The
-          Digital Dreamers
+          © 2026 PT Bank Maybank Indonesia Tbk. All Rights Reserved. Made by PROUJI
         </p>
         <p class="font-headline text-[10px] uppercase text-neutral-500">
           Sistem Layanan Manajemen Antrian Safe Deposit Box
